@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.12",
     "cors": "^2.8.5",
@@ -17,6 +18,7 @@
     "joi": "^13.1.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mongoose": "^8.8.3"
+    "mongoose": "^8.8.3",
+    "stripe": "^17.5.0"
   }
 }

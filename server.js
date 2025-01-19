@@ -8,6 +8,7 @@ const customerRoute = require('./routes/customers')
 const userRoute = require('./routes/users')
 const authRoute = require('./routes/auth')
 const cartRoute = require('./routes/carts')
+const orderRoute = require('./routes/orders')
 const config = require('config')
 
 if(!config.get('jwtPrivateKey')){
@@ -35,6 +36,7 @@ app.use('/api/customers', customerRoute)
 app.use('/api/users', userRoute)
 app.use('/api/auth', authRoute)
 app.use('/api/carts', cartRoute)
+app.use('/api/orders', orderRoute)
 
 
 

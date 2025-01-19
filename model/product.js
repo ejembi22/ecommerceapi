@@ -1,8 +1,7 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
 const { categoryschema } = require('./category')
-const { type } = require('joi/lib/types/object')
-const { required } = require('joi/lib/types/lazy')
+
 
 const productschema = new mongoose.Schema({
    
