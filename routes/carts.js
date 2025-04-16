@@ -29,7 +29,7 @@ router.post('/', async(req, res)=>{
     let cart = new Cart({
         customer:{
             name:customer.name,
-            isGold:customer.isGold,
+            // isGold:customer.isGold,
             phoneNumber:customer.phoneNumber
 
         },

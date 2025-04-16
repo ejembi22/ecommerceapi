@@ -1,62 +1,44 @@
 const {User} = require("../model/user");
-const _ =require('lodash')
 const bcrypt = require('bcryptjs')
 const Joi = require('joi')
 const express = require('express');
 const router = express.Router()
-// const jwt = require('jsonwebtoken')
-// const config = require('config')
 
 
-// router.get('/', async(req, res) =>{ 
-//     const user = await User.find().sort() ;
-//     res.send(user)
-// })
-router.post('/', async(req, res)=>{
-    const {error} = validate(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
+router.post('/', async(req, res) => {
+    try {
+        const { email, password } = req.body;
 
-    let user = await User.findOne({email:req.body.email});
-    if(!user) return res.status(400).send('invalid email and password .');
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ message: "Invalid email or password." });
 
-    // user = new User({
-    //     name: req.body.name,
-    //     email:req.body.email,
-    //     password:req.body.password
-    // });
+        // Check the password against the hashed one in the database
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Invalid email or password." });
 
-//    const salt = await bcrypt.genSalt(10);
-//    user.password = await bcrypt.hash(user.password, salt);
+        // Generate a new token
+        const token = await user.generateAuthToken();
 
-//     await user.save();
-
-const validPassword = await bcrypt.compare(req.body.password, user.password);
-if(!validPassword) return res.status(400).send('Invalid email or password.')
+        // Return token and success message
+        res.json({ token, message: "Login successful!" });
+    } catch (err) {
+        console.error("Login error:", err.message);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
 
 
 
-    // const token = jwt.sign({_id: user._id, name: user.name}, config.get('jwtPrivateKey'))    //you wrap your jwtprivatekey with your config.get//
-   const token = user.generateAuthToken()
-    res.send(token)
-})
 
 
-
-function validate(req){
-    const schema = {
+function validateLogin(req){
+    const schema =Joi.object ({
         email:Joi.string().min(5).max(255).required().email(),
         password:Joi.string().min(5).max(255).required()
-    };
+    });
 
-    return Joi.validate(req, schema)
+    return schema.validate(req);
 }
-
-
-
-
-
-
-
 
 
 

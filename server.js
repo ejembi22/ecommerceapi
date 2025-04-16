@@ -1,3 +1,5 @@
+require('dotenv').config();
+const dotenv = require('dotenv');
 const mongoose = require('mongoose')
 const express = require('express')
 const app = express()
@@ -15,6 +17,7 @@ if(!config.get('jwtPrivateKey')){
     console.error('FATAL ERROR:jwtPrivateKey is not defined');
     process.exit(1)
 }
+
 
 
 

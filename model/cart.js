@@ -11,10 +11,10 @@ const cartschema = new mongoose.Schema({
                 maxlength: 50
             },
         
-            isGold:{
-                type:Boolean,
-                default: false,
-            },
+            // isGold:{
+            //     type:Boolean,
+            //     default: false,
+            // },
         
             phoneNumber:{
                 type:String,
@@ -90,7 +90,7 @@ function validateCart(cart){
     const schema = Joi.object({
         customer:Joi.object({
          name:Joi.string().min(3).max(50).required(),
-         isGold:Joi.boolean(),
+        //  isGold:Joi.boolean(),
          phoneNumber:Joi.string().min(5).max(50).required()   
 
         })
