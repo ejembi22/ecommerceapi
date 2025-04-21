@@ -1,114 +1,50 @@
-const Joi = require('joi')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const Joi = require('joi');
 
-const cartschema = new mongoose.Schema({
-    customer:{
+// Define product schema (for embedded items)
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true, minlength: 5, maxlength: 225 },
+    price: { type: Number, required: true },
+    discountprice: { type: String, required: true },
+    ratenumber: { type: Number, required: true },
+    total_price: { type: Number, required: true },
+    quantity: { type: Number, required: true }
+});
+
+// Cart schema with items array
+const cartSchema = new mongoose.Schema({
+    customer: {
         type: new mongoose.Schema({
-            name:{
-                type:String,
-                required: true,
-                minlength: 3,
-                maxlength: 50
-            },
-        
-            // isGold:{
-            //     type:Boolean,
-            //     default: false,
-            // },
-        
-            phoneNumber:{
-                type:String,
-                required: true,
-                min: 5,
-                max: 50
-            }
-
-
+            name: { type: String, required: true, minlength: 3, maxlength: 50 },
+            phoneNumber: { type: String, required: true, minlength: 5, maxlength: 50 }
         }),
-        required:true
+        required: true
     },
+    items: [productSchema], // <-- This replaces the single product field
+    created_at: { type: Date },
+    updated_at: { type: Date },
+    status: { type: String }
+});
 
-    product:{
-        type: new mongoose.Schema({
-            name:{
-                type:String,
-                required: true,
-                minlength: 5,
-                maxlength: 225
-            },
-          
-        
-            price:{
-                type:Number,
-                required:true,
-            },
-            discountprice:{
-             type:String,
-             required:true
-            },
-        
-            ratenumber:{
-                type:Number,
-                required:true,
-        
-            },
-        
-          
+const Cart = mongoose.model('Cart', cartSchema);
 
-            total_price:{
-                type:Number,
-                required:true
-            },
-
-            quantity:{
-                type:Number,
-                required:true
-            }
-
-        }),
-
-        required:true
-    },
-
-    created_at:{
-        type:Date
-    },
-
-    updated_at:{
-        type:Date
-    },
-    status:{
-        type:String
-    }
-
-
-
-})
-
-const Cart = mongoose.model('Cart', cartschema)
+// Validation for the incoming request (not database schema)
 function validateCart(cart){
     const schema = Joi.object({
-        customer:Joi.object({
-         name:Joi.string().min(3).max(50).required(),
-        //  isGold:Joi.boolean(),
-         phoneNumber:Joi.string().min(5).max(50).required()   
+        customer: Joi.object({
+            name: Joi.string().min(3).max(50).required(),
+            phoneNumber: Joi.string().min(5).max(50).required()
+        }).required(),
 
-        })
-        .required(),
-
-        productId:Joi.string().required(),  // Add validation for 'productId'
+        productId: Joi.string().required(),
 
         product: Joi.object({
-        quantity:Joi.number().required() // Validate 'quantity' only since you get the rest of the product info from DB
+            quantity: Joi.number().min(1).required()
+        }).required()
+    });
 
-        })
-        .required()
-    })
-
-    return schema.validate(cart)
-
+    return schema.validate(cart);
 }
 
-
 exports.Cart = Cart;
-exports.validate = validateCart
+exports.validate = validateCart;
